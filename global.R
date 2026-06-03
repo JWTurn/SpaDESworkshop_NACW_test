@@ -45,17 +45,21 @@ out <- SpaDES.project::setupProject(
   params = list(
     .globals = list(
       .plots = c("png"),
-      .studyAreaName=  "dehchoN",
+      .studyAreaName =  "dehchoN",
       .useCache = c(".inputObjects", 'init'),
       dataYear = 2020, #TODO Eliot, is 2025 an option now? #start year for predicted forest growth
       sppEquivCol = "LandR"
     ),
 
     scfmDataPrep = list(
-      targetN = 2000, # keeping low for sim, better would be 4000
-      .useParallelFireRegimePolys = F
+      targetN = 2000, # keeping low for workshop example, better would be 4000
+      .useParallelFireRegimePolys = F,
+      .useCloud = T
     ),
 
+    RSFpredict = list(
+      simulationProcess = 'dynamic'
+    )
 
   ),
 
@@ -63,7 +67,10 @@ out <- SpaDES.project::setupProject(
                "PredictiveEcology/reproducible@development", "PredictiveEcology/LandR@development",
                "PredictiveEcology/SpaDES.core@development"),
 
-  # years of sim
+# expected for scfm
+  cloudFolderID = 'https://drive.google.com/drive/folders/199oEp-TVaCyacwqS4PPf3XWMbhPe4YBN?usp=share_link',
+
+ # years of sim
   times = list(start = 2020, end = 2075),
 
   model = reproducible::prepInputs(url = 'https://drive.google.com/file/d/1ma5qRk2NNidLhrQoiLIzd7W5ogeTaH5-/view?usp=share_link',
@@ -82,6 +89,7 @@ out <- SpaDES.project::setupProject(
   modelLand = reproducible::prepInputs(url = 'https://drive.google.com/file/d/1LeYrZBKrEPq6jSIP1SWM-grfINTeQjvn/view?usp=share_link',
                                        fun =  'terra::rast',
                                        destinationPath = 'inputs'),
+
 
   # raster needed as template for borealBiomass and scfm
   # making it a finer resolution than final needed for RSF so can calculate proportion
