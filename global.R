@@ -73,7 +73,7 @@ out <- SpaDES.project::setupProject(
  # years of sim
   times = list(start = 2020, end = 2075),
 
-  model = reproducible::prepInputs(url = 'https://drive.google.com/file/d/1ma5qRk2NNidLhrQoiLIzd7W5ogeTaH5-/view?usp=share_link',
+  model = reproducible::prepInputs(url = 'https://drive.google.com/file/d/1ILE0WmePubjHiwynSjV_EyetnUhuQIJU/view?usp=share_link',
                                    fun = 'readRDS',
                                    destinationPath = 'inputs'),
 
@@ -102,6 +102,17 @@ out <- SpaDES.project::setupProject(
 
   rasterToMatch = {
     reproducible::postProcess(rasterToMatchLarge, cropTo = studyArea, maskTo = studyArea)
+  },
+
+  # use finer res time since fire to start so have historic fire history in sim
+  timeSinceFire = {
+    rsts <- reproducible::prepInputs(url = 'https://drive.google.com/file/d/1D6_Zc-xOttWzTOqasXh6KpGTaXYZ5OMA/view?usp=share_link',
+                                    fun =  'terra::rast',
+                                    destinationPath = 'inputs')
+    tsf <- postProcess(rsts$timeSinceFire,
+                to = rasterToMatch)
+    tsf <- terra::subst(tsf, 122, NA) # scfm needs these to be NA
+    tsf
   },
 
   # species equivalencies for borealBiomass
